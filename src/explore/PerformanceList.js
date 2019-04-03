@@ -170,7 +170,7 @@ componentDidMount(){
           'Accept': 'application/json',
           'Content-Type': 'application/json',
        },
-       body: JSON.stringify({performanceData})
+       body: JSON.stringify(performanceData)
       }).then(response => {
         this.setState({showAddForm: true});
       }).catch(error => {
