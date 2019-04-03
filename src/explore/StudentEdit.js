@@ -12,40 +12,40 @@ function validate(studentName, rollNumber, caste, religion,
   // we are going to store errors for all fields
   // in a signle array
   const errors = [];
-  if(school === '' || school === 'undefined'){
+  if(school === '' || school === undefined){
     errors.push("School Name cannot be empty");
   } 
-  if(grade === '' || grade === 'undefined'){
+  if(grade === '' || grade === undefined){
     errors.push("Class cannot be empty");
   } 
-  if(section === '' || section === "undefined"){
+  if(section === '' || section === undefined){
     errors.push("Section cannot be empty");
   } 
-  if(studentName === '' || studentName === 'undefined'){
+  if(studentName === '' || studentName === undefined){
       errors.push("Student Name cannot be empty");
   }
-  if(rollNumber === '' || rollNumber === "undefined"){
+  if(rollNumber === '' || rollNumber === undefined){
     errors.push("Roll number cannot be empty");
   } 
-  if(caste === '' || caste === "undefined"){
+  if(caste === '' || caste === undefined){
     errors.push("Caste cannot be empty");
   } 
-  if(religion === '' || religion === "undefined"){
+  if(religion === '' || religion === undefined){
     errors.push("Religion cannot be empty");
   } 
-  if(joiningDate === '' || joiningDate === "undefined"){
-    errors.push("Joining Date cannot be empty");
-  } 
-  if(address === '' || address === "undefined"){
+  if(address === '' || address === undefined){
     errors.push("Address cannot be empty");
   } 
-  if(pinCode === '' || pinCode === "undefined"){
+  if(pinCode === '' || pinCode === undefined){
     errors.push("Pincode cannot be empty");
   } 
-  if(city === '' || city === "undefined"){
+  if(city === '' || city === undefined){
     errors.push("City cannot be empty");
   } 
-  if(gender === '' || gender === "undefined"){
+  if(joiningDate === '' || joiningDate === undefined){
+    errors.push("Joining Date cannot be empty");
+  } 
+  if(gender === null || gender === undefined){
     errors.push("Gender must be selected");
   }
   return errors;
@@ -248,84 +248,91 @@ class StudentEdit extends Component {
   async studentSubmit(event) {
     event.preventDefault();
     const {studentName, rollNumber, caste, religion,
-    joiningDate, address, pinCode, city, gender, school, grade, section} = this.state;
-    const errors = validate(studentName, rollNumber, caste, religion, joiningDate, 
-      address, pinCode, city, gender, school, grade, section);
+    joiningDate, address, pinCode, city, gender, selectedSchool, 
+    selectedGrade, selectedSec, school,grade, section} = this.state;
     let selId = this.props.match.params.id;
-    if (errors.length > 0) {
-      this.setState({ errors });
-      return false;
-    } else {
-      this.setState({errors:[]});
-      if (selId !== 'new') {
-        return fetch(API_PROXY_URL+`/api/v1/student`, {
-          method: 'PUT',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: selId,
-            rollNumber:rollNumber,
-            label: studentName,
-            caste: caste,
-            religion: religion,
-            gender: gender,
-            joiningDate: joiningDate,
-            city:city,
-            pincode: pinCode,
-            address:address,
-            schoolId: school,
-            clsId: grade,
-            sectionId: section,
-          })
-        }).then(response => {
-          this.setState({showUpdateForm: true});
-        }).catch(error => {
-          this.setState({showErrorForm: true});
-          console.error("error", error);
-          this.setState({
-            error:`${error}`
-          });
-        });
+    this.setState({errors:[]});
+    if (selId !== 'new') {
+        const errors = validate(studentName, rollNumber, caste, religion, joiningDate, 
+          address, pinCode, city, gender, school, grade, section);
+        if (errors.length > 0) {
+          this.setState({ errors });
+          return false;
+        } else {
+            return fetch(API_PROXY_URL+`/api/v1/student`, {
+              method: 'PUT',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: selId,
+                rollNumber:rollNumber,
+                label: studentName,
+                caste: caste,
+                religion: religion,
+                gender: gender,
+                joiningDate: joiningDate,
+                city:city,
+                pincode: pinCode,
+                address:address,
+                schoolId: school,
+                clsId: grade,
+                sectionId: section,
+              })
+            }).then(response => {
+              this.setState({showUpdateForm: true});
+            }).catch(error => {
+              this.setState({showErrorForm: true});
+              console.error("error", error);
+              this.setState({
+                error:`${error}`
+              });
+            });
+          }
       } else {
-        let schoolId = this.state.selectedSchool.id;
-        let gradeId = this.state.selectedGrade.id;
-        let sectionId = this.state.selectedSec.id;
-        let formattedJoinDate = new Intl.DateTimeFormat("fr-ca", {year: 'numeric', month: '2-digit',day: '2-digit'}).format(joiningDate);
-      // let groupId = this.state.selectedGroup.id;
-        return fetch(API_PROXY_URL+`/api/v1/student`, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            rollNumber:rollNumber,
-            label: studentName,
-            caste: caste,
-            religion: religion,
-            gender: gender,
-            joiningDate: formattedJoinDate,
-            schoolId: schoolId,
-            clsId: gradeId,
-            sectionId: sectionId,
-            city:city,
-            pincode: pinCode,
-            address:address
-          })
-        }).then(response => {
-          this.setState({showAddForm: true});
-        }).catch(error => {
-          this.setState({showErrorForm: true});
-          console.error("error", error);
-          this.setState({
-            error:`${error}`
-          });
-        });
+        const errors = validate(studentName, rollNumber, caste, religion, joiningDate, 
+          address, pinCode, city, gender, selectedSchool, selectedGrade, selectedSec);
+        if (errors.length > 0) {
+          this.setState({ errors });
+          return false;
+        } else {
+            let schoolId = this.state.selectedSchool.id;
+            let gradeId = this.state.selectedGrade.id;
+            let sectionId = this.state.selectedSec.id;
+            let formattedJoinDate = new Intl.DateTimeFormat("fr-ca", {year: 'numeric', month: '2-digit',day: '2-digit'}).format(joiningDate);
+            return fetch(API_PROXY_URL+`/api/v1/student`, {
+              method: 'POST',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                rollNumber:rollNumber,
+                label: studentName,
+                caste: caste,
+                religion: religion,
+                gender: gender,
+                joiningDate: formattedJoinDate,
+                schoolId: schoolId,
+                clsId: gradeId,
+                sectionId: sectionId,
+                city:city,
+                pincode: pinCode,
+                address:address
+              })
+            }).then(response => {
+              this.setState({showAddForm: true});
+            }).catch(error => {
+              this.setState({showErrorForm: true});
+              console.error("error", error);
+              this.setState({
+                error:`${error}`
+              });
+            });
+          }
       }
-    }
-}
+  }
 
   resetStudent = async () => {
     if (this.props.match.params.id !== 'new') {
@@ -349,9 +356,9 @@ class StudentEdit extends Component {
       });
     } else {
       this.setState({
-        school:"",
-        section:"",
-        grade:"",
+        //school:"",
+        //section:"",
+        //grade:"",
         schoolName:null,
         gradeName:null,
         sectionName:null,
@@ -454,8 +461,8 @@ class StudentEdit extends Component {
             </FormGroup>
             <FormGroup className="col-md-3 mb-3" style={{display:'inline-block'}} onChange={(e) => this.setState({ selected: e.target.value })} >
               <Label for="gender" style={{color:'white'}}>Gender</Label><br></br>
-              <Input type="radio" value="male" name="gender" id="gender" defaultChecked={this.state.gender === "male"}/> Male &nbsp;&nbsp;
-              <Input type="radio" value="female" name="gender" id="gender" defaultChecked={this.state.gender === "female"}/> Female
+              <Input type="radio" value="male" name="gender" id="gender" defaultChecked={this.state.gender === "male"}/> <span style={{color:'white'}}> Male &nbsp;&nbsp;</span>
+              <Input type="radio" value="female" name="gender" id="gender" defaultChecked={this.state.gender === "female"}/><span style={{color:'white'}}> Female</span> 
             </FormGroup>
             </div>
           <FormGroup>   

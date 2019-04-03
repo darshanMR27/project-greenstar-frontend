@@ -120,25 +120,18 @@ componentDidMount(){
     this.setState({selectedReportType});
     var reportTypeId = selectedReportType.id;
     if(reportTypeId === 1){
-      this.setState({showIndReportSel: true});
-      this.setState({showGrpReportSel: true});
-      this.setState({showForm: false});
-      this.setState({selectedSchool:""});
-      this.setState({selectedGrade:""});
-      this.setState({selectedSec:""});
-      this.setState({selectedGroup:""});
-      this.setState({showIndRepForm: false});
-      this.setState({showGrpRepForm: false});
-      this.setState({showSecRepForm: false});
+      this.setState({showIndReportSel: true,
+        showGrpReportSel: true, showForm: false,
+        selectedSchool:"", selectedGrade:"", 
+        selectedSec:"", selectedGroup:"", 
+        showIndRepForm: false, showGrpRepForm: false,
+        showSecRepForm: false});
     } else if(reportTypeId === 2 || reportTypeId === 3){
-      this.setState({showGrpReportSel: false});
-      this.setState({showIndReportSel: true});
-      this.setState({showForm: false});
-      this.setState({selectedSchool:""});
-      this.setState({selectedGrade:""});
-      this.setState({showIndRepForm: false});
-      this.setState({showGrpRepForm: false});
-      this.setState({showSecRepForm: false});
+      this.setState({showGrpReportSel: false,
+        showIndReportSel: true, showForm: false,
+        selectedSchool:"", selectedGrade:"",
+        showIndRepForm: false, showGrpRepForm: false,
+        showSecRepForm: false}); 
     }
   }
   handleSchoolChange = (selectedSchool) => {
@@ -157,7 +150,7 @@ componentDidMount(){
   }
   handleClassChange = (selectedGrade) => {
     this.setState({ selectedGrade });
-    return axios.get(API_PROXY_URL+`api/v1/section/class/`+selectedGrade.id)
+    return axios.get(API_PROXY_URL+`/api/v1/section/class/`+selectedGrade.id)
     .then(result => {
       console.log(result);
       this.setState({
@@ -176,14 +169,12 @@ componentDidMount(){
       console.log(result);
       this.setState({
         groups: result.data,
-        loading:false,
         error:false
       });
     }).catch(error => {
       console.error("error", error);
       this.setState({
-        error:`${error}`,
-        loading:false
+        error:`${error}`
       });
     });
   }
@@ -195,14 +186,12 @@ componentDidMount(){
       console.log(result);
       this.setState({
         students: result.data,
-        loading:false,
         error:false
       });
     }).catch(error => {
       console.error("error", error);
       this.setState({
-        error:`${error}`,
-        loading:false
+        error:`${error}`
       });
     });
   }
@@ -220,13 +209,9 @@ componentDidMount(){
     let diffDate = date_diff_indays(fromDate, toDate);
     let url = null;
     if(diffDate > 6){
-      this.setState({showErrorForm: true});
-      this.setState({showIndRepForm: false});
-      this.setState({showGrpRepForm: false});
-      this.setState({showSecRepForm: false});
-      this.setState({
-        error:'Choose date range less than or equal to 6 days'
-      });
+      this.setState({showErrorForm: true,
+        showIndRepForm: false, showGrpRepForm: false,
+        showSecRepForm: false, error:'Choose date range less than or equal to 6 days'});
     } else {
       if(selReportTypeId === 1){
           url = API_PROXY_URL+`/api/v1/reports/group/`+selectedGroupId;
@@ -234,20 +219,16 @@ componentDidMount(){
             console.log('Report Data = '+result);
             this.setState({
                 indReportData: result.data,
-                loading:false,
                 error:false
               });
-              this.setState({showErrorForm: false});
-              this.setState({showIndRepForm: true});
-              this.setState({showGrpRepForm: false});
-              this.setState({showSecRepForm: false});
+              this.setState({showErrorForm: false,
+                showIndRepForm: true, 
+                showGrpRepForm: false,
+                showSecRepForm: false});
             }).catch(error => {
               console.error("error", error);
-              this.setState({showErrorForm: true});
-              this.setState({
-              error:`${error}`,
-              loading:false
-            });
+              this.setState({showErrorForm: true,
+                error:`${error}`});
           });
       } else if(selReportTypeId === 2){
           url = API_PROXY_URL+`/api/v1/reports/cls-group/`+selectedGradeId;
@@ -258,17 +239,14 @@ componentDidMount(){
                 loading:false,
                 error:false
               });
-              this.setState({showErrorForm: false});
-              this.setState({showIndRepForm: false});
-              this.setState({showGrpRepForm: true});
-              this.setState({showSecRepForm: false});
+              this.setState({showErrorForm: false,
+                showIndRepForm: false,
+                showGrpRepForm: true,
+                showSecRepForm: false});
             }).catch(error => {
               console.error("error", error);
-              this.setState({showErrorForm: true});
-              this.setState({
-              error:`${error}`,
-              loading:false
-            });
+              this.setState({showErrorForm: true,
+                error:`${error}`});
           });
       } else if(selReportTypeId === 3) {
         url = API_PROXY_URL+`/api/v1/reports/cls-section/`+selectedGradeId;
@@ -276,29 +254,24 @@ componentDidMount(){
           console.log('Report Data = '+result);
           this.setState({
               secReportData: result.data,
-              loading:false,
               error:false
             });
-            this.setState({showErrorForm: false});
-            this.setState({showIndRepForm: false});
-            this.setState({showGrpRepForm: false});
-            this.setState({showSecRepForm: true});
+            this.setState({showErrorForm: false,
+              showIndRepForm: false, 
+              showGrpRepForm: false,
+              showSecRepForm: true});
           }).catch(error => {
             console.error("error", error);
-            this.setState({showErrorForm: true});
-            this.setState({
-            error:`${error}`,
-            loading:false
+            this.setState({showErrorForm: true, 
+            error:`${error}`
           });
         });
       } else {
-        this.setState({showErrorForm: true});
-        this.setState({showIndRepForm: false});
-        this.setState({showGrpRepForm: false});
-        this.setState({showSecRepForm: false});
-        this.setState({
-          error:'Unable to view report, please select atleast school and class'
-        }); 
+        this.setState({showErrorForm: true,
+          showIndRepForm: false, 
+          showGrpRepForm: false, 
+          showSecRepForm: false,
+          error:'Unable to view report, please select atleast school and class'});
       }
     }
   }

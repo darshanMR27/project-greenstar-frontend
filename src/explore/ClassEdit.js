@@ -11,10 +11,10 @@ function validate(schoolId, gradeName) {
   // we are going to store errors for all fields
   // in a signle array
   const errors = [];
-  if(schoolId === '' || schoolId === "undefined"){
+  if(schoolId === '' || schoolId === undefined){
       errors.push("School Name cannot be empty");
   } 
-  if(gradeName === '' || gradeName === "undefined"){
+  if(gradeName === '' || gradeName === undefined){
     errors.push("Class or Grade cannot be empty");
   } else {
     if (gradeName > 10) {
@@ -100,55 +100,61 @@ class ClassEdit extends Component {
     const {gradeName, selectedSchool, schoolId } = this.state;
     let selId = this.props.match.params.id;
     //alert('selId = '+selId+', gradeId = '+gradeId+', schoolId ='+schoolId);
-    const errors = validate(schoolId, gradeName);
-    if (errors.length > 0) {
-      this.setState({ errors });
-      return false;
-    } else {
-      this.setState({errors:[]});
-      if (selId !== 'new') {  
-        return fetch(API_PROXY_URL+`/api/v1/class`, {
-          method: 'PUT',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: selId,
-            grade: gradeName,
-            schoolId: schoolId
-          })
-        }).then(response => {
-          this.setState({showUpdateForm: true});
-        }).catch(error => {
-          this.setState({showErrorForm: true});
-          console.error("error", error);
-          this.setState({
-            error:`${error}`
-          });
-        });
+    this.setState({errors:[]});
+    if (selId !== 'new') {  
+        const errors = validate(schoolId, gradeName);
+        if (errors.length > 0) {
+          this.setState({ errors });
+          return false;
+        } else {
+            return fetch(API_PROXY_URL+`/api/v1/class`, {
+              method: 'PUT',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: selId,
+                grade: gradeName,
+                schoolId: schoolId
+              })
+            }).then(response => {
+              this.setState({showUpdateForm: true});
+            }).catch(error => {
+              this.setState({showErrorForm: true});
+              console.error("error", error);
+              this.setState({
+                error:`${error}`
+              });
+            });
+          }
       } else {
-        let schoolId = selectedSchool.id;
-        return fetch(API_PROXY_URL+`/api/v1/class`, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            grade: gradeName,
-            schoolId: schoolId
-          })
-        }).then(response => {
-          this.setState({showAddForm: true});
-        }).catch(error => {
-          this.setState({showErrorForm: true});
-          console.error("error", error);
-          this.setState({
-            error:`${error}`
+        const errors = validate(this.state.selectedSchool, gradeName);
+        if (errors.length > 0) {
+          this.setState({ errors });
+          return false;
+        } else {
+          let schoolId = selectedSchool.id;
+          return fetch(API_PROXY_URL+`/api/v1/class`, {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              grade: gradeName,
+              schoolId: schoolId
+            })
+          }).then(response => {
+            this.setState({showAddForm: true});
+          }).catch(error => {
+            this.setState({showErrorForm: true});
+            console.error("error", error);
+            this.setState({
+              error:`${error}`
+            });
           });
-        });
-      }
+        }
     }
   }
 
@@ -160,7 +166,8 @@ class ClassEdit extends Component {
         error:"",
         showAddForm:false,
         showErrorForm: false,
-        showUpdateForm:false
+        showUpdateForm:false,
+        //selectedSchool:null
       });
       this.setState({
         error:''
@@ -173,13 +180,13 @@ class ClassEdit extends Component {
         error:"",
         showAddForm:false,
         showErrorForm: false,
-        showUpdateForm:false
+        showUpdateForm:false,
+        //selectedSchool:null
       });
       this.setState({
         error:''
       });
     }
-    
   }
 
   render() {

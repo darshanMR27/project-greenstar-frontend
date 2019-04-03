@@ -33,7 +33,7 @@ class StudentList extends Component {
 }
 
 componentDidMount(){
-  this.setState({showForm: true});
+  this.setState({showForm: false, showStudentForm: true});
     return axios.get(API_PROXY_URL+`/api/v1/school/`)
     .then(result => {
       console.log(result);
@@ -85,7 +85,8 @@ componentDidMount(){
       this.setState({
         students: result.data,
         loading:false,
-        error:false
+        error:false,
+        showForm: true
       });
     }).catch(error => {
       console.error("error", error);
@@ -96,55 +97,13 @@ componentDidMount(){
     });
   }
 
-  // handleGroupChange = (selectedGroup) => {
-  //   this.setState({ selectedGroup });
-  //   //alert("selectedSection="+selectedSection);
-  //   return axios.get(API_PROXY_URL+`/api/v1/student/group/`+selectedGroup.id)
-  //   .then(result => {
-  //     console.log(result);
-  //     this.setState({
-  //       students: result.data,
-  //       loading:false,
-  //       error:false
-  //     });
-  //   }).catch(error => {
-  //     console.error("error", error);
-  //     this.setState({
-  //       error:`${error}`,
-  //       loading:false
-  //     });
-  //   });
-  // }
-
-  // onSubmit = async () => {
-  //   fetch({API_PROXY_URL}`/api/v1/group/`,{
-  //       method: 'GET',
-  //       headers: {
-  //           'Accept': 'application/json',
-  //           'Content-Type': 'application/json',
-  //           "cache-control": "no-cache"
-  //       }
-  //     }).then(response => response.json()).then(data => {
-  //         console.log(data);
-  //         this.setState({
-  //             students: data,
-  //         });
-  //     }).catch(error => {
-  //         console.log(error)
-  //     });
-  //     this.props.history.push('/students');
-  // }
-
   viewGroups = async () => {
     this.setState({showForm: true});
   }
   
   hideHeader = async () => {
-    this.setState({showForm: false});
-  }
-
-  addHeader = async () => {
-    this.setState({showForm: false});
+    document.getElementById("AddStudent").style.display="none";
+    this.setState({showForm: false, showStudentForm: false});
   }
 
   // async remove(id) {
@@ -165,50 +124,57 @@ componentDidMount(){
     const showHide = {
       'display': this.state.showForm ? 'block' : 'none'
     };
+    const showHideStudent = {
+      'display': this.state.showStudentForm ? 'block' : 'none'
+    };
     return (
       <div>
           <div className="row float-right">
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.addHeader()}  tag={Link} to="/students/new">Add Student</Button>{'     '}
+                    <Button id="AddStudent" color="success" onClick={() => this.hideHeader()}  tag={Link} to="/students/new">Add Student</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>
         </div>
-            <div style={showHide}>
+            <div style={showHideStudent}>
                     <h2>List Student</h2>
-                        <tr className="row">
-                          <td className="col-md-3 mb-3">
+                    <Container>
+                      <Form className="row">
+                        <FormGroup className="col-md-3 mb-3">
                           <Label for="name" style={{color:'white'}}>School Name</Label>
                           <Select options={ schools } name="school" id="school" onChange={this.handleSchoolChange} value={selectedSchool}/>
-                      </td>
-                      <td className="col-md-3 mb-3">
+                      </FormGroup>
+                      <FormGroup className="col-md-3 mb-3">
                           <Label for="grade" style={{color:'white'}}>Class or Grade</Label>
                           <Select options={ grades } name="grade" id="grade" onChange={this.handleClassChange} value={selectedGrade}/>
-                       </td>
-                        <td className="col-md-3 mb-3">
+                       </FormGroup>
+                        <FormGroup className="col-md-3 mb-3">
                           <Label for="section" style={{color:'white'}}>Section</Label>
                           <Select options={ sections } name="section" id="section" onChange={this.handleSectionChange} value={selectedSection}/>
-                       </td>
+                       </FormGroup>
+                  </Form>
+                </Container>
+                </div>
+                <div style={showHide}>
+                  <Table className="mt-4 tableStyle">
+                    <thead>
+                      <tr>
+                        <th className="thStyle" width="20%">Name</th>
+                        <th className="thStyle" width="20%">Roll Number</th>
+                        <th className="thStyle" width="20%">Caste</th>
+                        <th className="thStyle" width="20%">Religion</th>
+                        <th className="thStyle" width="20%">Gender</th>
+                        <th className="thStyle" width="10%">Joining Date</th>
+                        <th className="thStyle" width="10%">Address</th>
+                        <th className="thStyle" width="10%">City</th>
+                        <th className="thStyle" width="10%">Pin Code</th>
+                        <th className="thStyle" width="10%">Action</th>
                       </tr>
-                <Table className="mt-4 tableStyle">
-                  <thead>
-                    <tr>
-                      <th className="thStyle" width="20%">Name</th>
-                      <th className="thStyle" width="20%">Roll Number</th>
-                      <th className="thStyle" width="20%">Caste</th>
-                      <th className="thStyle" width="20%">Religion</th>
-                      <th className="thStyle" width="20%">Gender</th>
-                      <th className="thStyle" width="10%">Joining Date</th>
-                      <th className="thStyle" width="10%">Address</th>
-                      <th className="thStyle" width="10%">City</th>
-                      <th className="thStyle" width="10%">Pin Code</th>
-                      <th className="thStyle" width="10%">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{color: '#dee2e6'}}>
-                  {students.map(student => (
+                    </thead>
+                    <tbody style={{color: '#dee2e6'}}>
+                      {students.map(student => (
                         <tr key={student.id}>
                             <td className="thStyle" style={{whiteSpace: 'nowrap'}}>{student.label}</td>
                             <td className="thStyle">{student.rollNumber}</td>
@@ -227,8 +193,8 @@ componentDidMount(){
                             </td>
                         </tr>
                         ))}
-                  </tbody>
-                </Table>
+                    </tbody>
+                  </Table>
                 </div>
       </div>
     );

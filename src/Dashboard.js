@@ -1221,14 +1221,12 @@ class Dashboard extends Component {
           console.log(result);
           this.setState({
             groups: result.data,
-            loading:false,
             error:false
           });
         }).catch(error => {
           console.error("error", error);
           this.setState({
-            error:`${error}`,
-            loading:false
+            error:`${error}`
           });
         });
       }
@@ -1241,14 +1239,12 @@ class Dashboard extends Component {
           console.log(result);
           this.setState({
             students: result.data,
-            loading:false,
             error:false
           });
         }).catch(error => {
           console.error("error", error);
           this.setState({
-            error:`${error}`,
-            loading:false
+            error:`${error}`
           });
         });
       }
@@ -1272,7 +1268,6 @@ class Dashboard extends Component {
         const disCanvas = this.refs.disCanvas;
         const ctx2 = disCanvas.getContext("2d");
         const criteriaId = this.state.selectedCriteria.id;
-        alert('criteriaId = '+criteriaId);
         if(criteriaId === 1){
           const selCity = this.state.selectedCity.label;
           axios.get(API_PROXY_URL+`/api/v1/star/city/`+selCity+`?month=`+this.state.starDateFormat)
@@ -1283,14 +1278,12 @@ class Dashboard extends Component {
             drawDisciplineStar(result.data.desciplineDetails, ctx2);
             this.setState({
                 data: result.data,
-                loading:false,
                 error:false
               });
           }).catch(error => {
             console.error("error", error);
             this.setState({
-              error:`${error}`,
-              loading:false
+              error:`${error}`
             });
           });  
           this.setState({showForm: true});
@@ -1320,26 +1313,29 @@ class Dashboard extends Component {
                 } 
               }
             }
-          } 
-          alert('URL = '+url);
-          axios.get(url+`?month=`+this.state.starDateFormat)
-            .then(result => {
-              console.log(result);
-              drawAttendanceStar(result.data.attendanceDetails, ctx);
-              drawHomeWorkStar(result.data.homeWorkDetails, ctx1);
-              drawDisciplineStar(result.data.desciplineDetails, ctx2);
-              this.setState({
-                  data: result.data,
-                  loading:false,
-                  error:false
+            axios.get(url+`?month=`+this.state.starDateFormat)
+              .then(result => {
+                console.log(result);
+                drawAttendanceStar(result.data.attendanceDetails, ctx);
+                drawHomeWorkStar(result.data.homeWorkDetails, ctx1);
+                drawDisciplineStar(result.data.desciplineDetails, ctx2);
+                this.setState({
+                    data: result.data,
+                    error:false
+                  });
+              }).catch(error => {
+                console.error("error", error);
+                this.setState({
+                  error:`${error}`
                 });
-            }).catch(error => {
-              console.error("error", error);
-              this.setState({
-                error:`${error}`,
-                loading:false
-              });
-            });  
+              }); 
+          } 
+          else {
+            this.setState({showErrorForm: true, 
+              showForm: false, 
+              error:'Unable to view performance star, please select atleast school'});
+          }
+          
         }
     }
 
@@ -1353,10 +1349,9 @@ class Dashboard extends Component {
       this.setState({selectedCriteria});
       var criteriaId = selectedCriteria.id;
       if(criteriaId === 1){
-        this.setState({showCityDashboardForm: true});
-        this.setState({showOtherDashboardForm: false});
-        this.setState({showForm: false});
-        this.setState({selectedCity:""});
+        this.setState({showCityDashboardForm: true,
+          showOtherDashboardForm: false, 
+          showForm: false, selectedCity:""});
         return axios.get(API_PROXY_URL+`/api/v1/city`)
         .then(result => {
           console.log(result);
@@ -1371,14 +1366,10 @@ class Dashboard extends Component {
           });
         });
       } else if(criteriaId === 2){
-        this.setState({showOtherDashboardForm: true});
-        this.setState({showCityDashboardForm: false});
-        this.setState({showForm: false});
-        this.setState({selectedSchool:""});
-        this.setState({selectedGrade:""});
-        this.setState({selectedSec:""});
-        this.setState({selectedGroup:""});
-        this.setState({selectedStudent:""});
+        this.setState({showOtherDashboardForm: true,
+          showCityDashboardForm: false,
+          showForm: false, selectedSchool:"", selectedGrade:"", 
+          selectedSec:"", selectedGroup:"", selectedStudent:""});
         return axios.get(API_PROXY_URL+`/api/v1/school/`)
         .then(result => {
           console.log(result);
@@ -1399,10 +1390,9 @@ class Dashboard extends Component {
           schools,grades,sections, groups, students, 
           criterias, selectedCriteria, cities, selectedCity } = this.state;
         const showHide = {'display': this.state.showForm ? 'block' : 'none'};
-        const showErrorReport = {'display': this.state.showErrorForm ? 'block' : 'none'};
+        const showErrorDashboard = {'display': this.state.showErrorForm ? 'block' : 'none'};
         const showCityDashboardSel = {'display': this.state.showCityDashboardForm ? 'block' : 'none'};
         const showOtherDashboardSel = {'display': this.state.showOtherDashboardForm ? 'block' : 'none'};
-        
         return (
             <div className="dashboard">
             <Container>
@@ -1450,7 +1440,7 @@ class Dashboard extends Component {
                         </FormGroup>
                       </Form>
                       </div>
-                      <div style={showErrorReport}>
+                      <div style={showErrorDashboard}>
                           <p style={{color: 'red'}}>{error}</p>
                       </div>
                       <div style={showHide}>

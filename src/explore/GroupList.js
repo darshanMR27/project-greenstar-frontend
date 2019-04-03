@@ -35,7 +35,7 @@ class GroupList extends Component {
   }
   
     componentDidMount(){
-      this.setState({showForm: true});
+      this.setState({showForm: false, showSchoolForm: true});
       return axios.get(API_PROXY_URL+`/api/v1/school/`)
       .then(result => {
         console.log(result);
@@ -86,14 +86,13 @@ class GroupList extends Component {
         console.log(result);
         this.setState({
           data: result.data,
-          loading:false,
-          error:false
+          error:false,
+          showForm: true
         });
       }).catch(error => {
         console.error("error", error);
         this.setState({
-          error:`${error}`,
-          loading:false
+          error:`${error}`
         });
       });
     }
@@ -103,7 +102,8 @@ class GroupList extends Component {
   }
   
   hideHeader = async () => {
-    this.setState({showForm: false});
+    document.getElementById("AddGroup").style.display="none";
+    this.setState({showForm: false, showSchoolForm: false});
     this.setState({groupName:""});
     //this.props.history.push('/groups');
   }
@@ -126,6 +126,9 @@ class GroupList extends Component {
     const showHide = {
       'display': this.state.showForm ? 'block' : 'none'
     };
+    const showHideSection = {
+      'display': this.state.showSchoolForm ? 'block' : 'none'
+    };
     if(error){
       return (
           <p>
@@ -140,27 +143,31 @@ class GroupList extends Component {
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()}  tag={Link} to="/groups/new">Add Group</Button>{'     '}
+                    <Button id="AddGroup"  color="success" onClick={() => this.hideHeader()}  tag={Link} to="/groups/new">Add Group</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>
         </div>
-        <div style={showHide}>
-            <h2>List Group</h2>
-            <tr className="row">
-              <td className="col-md-3 mb-3">
-                  <Label for="name" style={{color:'white'}}>School Name</Label>
-                  <Select options={schools} name="school" id="school" onChange={this.handleSchoolChange} value={selectedSchool}/>
-              </td>
-              <td className="col-md-3 mb-3">
-                  <Label for="grade" style={{color:'white'}}>Class or Grade</Label>
-                  <Select options={ grades } name="grade" id="grade" onChange={this.handleClassChange} value={selectedGrade}/>
-              </td>
-                <td className="col-md-3 mb-3">
-                  <Label for="section" style={{color:'white'}}>Section</Label>
-                  <Select options={ sections } name="section" id="section" onChange={this.handleSectionChange} value={selectedSection}/>
-              </td>
-            </tr>                        
+        <div style={showHideSection}>
+              <h2>List Group</h2>
+              <Container>
+              <Form className="row">
+                <FormGroup className="col-md-3 mb-3">
+                    <Label for="name" style={{color:'white'}}>School Name</Label>
+                    <Select options={schools} name="school" id="school" onChange={this.handleSchoolChange} value={selectedSchool}/>
+                </FormGroup>
+                <FormGroup className="col-md-3 mb-3">
+                    <Label for="grade" style={{color:'white'}}>Class or Grade</Label>
+                    <Select options={ grades } name="grade" id="grade" onChange={this.handleClassChange} value={selectedGrade}/>
+                </FormGroup>
+                <FormGroup className="col-md-3 mb-3">
+                    <Label for="section" style={{color:'white'}}>Section</Label>
+                    <Select options={ sections } name="section" id="section" onChange={this.handleSectionChange} value={selectedSection}/>
+                </FormGroup>
+              </Form>  
+            </Container>
+          </div>                      
+          <div style={showHide}>
             <Table className="mt-4 tableStyle">
               <thead>
                 <tr>

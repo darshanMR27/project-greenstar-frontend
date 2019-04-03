@@ -22,9 +22,7 @@ class ClassList extends Component {
   //this.remove = this.remove.bind(this);
 }
 componentDidMount(){
-  this.setState({showForm: false});
-  this.setState({showSchoolForm: true});
-  
+  this.setState({showForm: false, showSchoolForm: true});
     return axios.get(API_PROXY_URL+`/api/v1/school/`)
     .then(result => {
       console.log(result);
@@ -45,8 +43,9 @@ componentDidMount(){
      .then(result => {
        console.log(result);
        this.setState({
-         grades: result.data, error:false});
-         this.setState({showForm: true});
+         grades: result.data, 
+         error:false,
+         showForm: true});
        }).catch(error => {
        console.error("error", error);
        this.setState({
@@ -60,11 +59,9 @@ componentDidMount(){
   }
   
   hideHeader = async () => {
-    this.setState({showForm: false});
-    this.setState({groupName:""});
-    this.setState({showForm: false});
-    this.setState({showSchoolForm: false});
-    //this.props.history.push('/groups');
+    document.getElementById("AddClass").style.display="none";
+    this.setState({showForm: false,
+    showSchoolForm: false});
   }
 
   // async remove(id) {
@@ -96,7 +93,7 @@ componentDidMount(){
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()} tag={Link} to="/grades/new">Add Class</Button>{'     '}
+                    <Button id="AddClass" color="success" onClick={() => this.hideHeader()} tag={Link} to="/grades/new">Add Class</Button>{'     '}
                   </FormGroup>
               </Form>
             </Container>

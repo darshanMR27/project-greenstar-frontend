@@ -37,6 +37,7 @@ class RoleList extends Component {
   }
   
   hideHeader = async () => {
+    document.getElementById("AddRole").style.display="none";
     this.setState({showForm: false});
     this.setState({groupName:""});
     //this.props.history.push('/groups');
@@ -64,7 +65,7 @@ class RoleList extends Component {
       return (
           <p>
             There was an error loading the response.. {'  '}
-            <Button color="primary" onClick={() => this.viewGroups()}  tag={Link} to="/groups">Try Again</Button>
+            <Button  color="primary" onClick={() => this.viewGroups()}  tag={Link} to="/groups">Try Again</Button>
           </p>
       );
     }
@@ -74,7 +75,7 @@ class RoleList extends Component {
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()}  tag={Link} to="/roles/new">Add Role</Button>{'     '}
+                    <Button id="AddRole" color="success" onClick={() => this.hideHeader()}  tag={Link} to="/roles/new">Add Role</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>

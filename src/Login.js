@@ -116,7 +116,7 @@ class Login extends Component {
                         </FormGroup>
                         <FormGroup style={{paddingLeft:'1.2em'}}>
                             <Button color="success" onClick={() => this.handleSubmit()}>Login</Button>{'     '}
-                            <Button color="success" onClick={() => this.resetForm()}>Reset</Button>{'     '}
+                            <Button color="secondary" onClick={() => this.resetForm()}>Reset</Button>{'     '}
                         </FormGroup>
                     </Form>
                 </Container>

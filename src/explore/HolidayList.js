@@ -41,6 +41,7 @@ componentDidMount(){
   }
   
   hideHeader = async () => {
+    document.getElementById("AddHoliday").style.display="none";
     this.setState({showForm: false,
     schoolName:"",maxGrade:"",address:"",pinCode:"",city:""});
     //this.props.history.push('/schools/new');
@@ -78,7 +79,7 @@ componentDidMount(){
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideHeader()}  tag={Link} to="/holidays/new">Add Holiday</Button>{'     '}
+                    <Button id="AddHoliday" color="success" onClick={() => this.hideHeader()}  tag={Link} to="/holidays/new">Add Holiday</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>

@@ -51,19 +51,11 @@ componentDidMount(){
   }
   
   hideHeader = async () => {
+    document.getElementById("AddSchool").style.display="none";
     this.setState({showForm: false});
     this.setState({showAddform:false});
-    this.props.history.push('/schools/new');
-  }
-
-  hideAddButton = async () => {
-    this.setState({showForm: false,
-    schoolName:"",maxGrade:"",address:"",pinCode:"",city:""});
-    this.setState({showAddform: false});
-    this.props.history.push('/schools/new');
-  }
-
-  
+    //this.props.history.push('/schools/new');
+  } 
 
   // async remove(id) {
   //   await fetch(API_PROXY_URL+`/api/school/${id}`, {
@@ -100,7 +92,7 @@ componentDidMount(){
             <Container>
               <Form>
                   <FormGroup>
-                    <Button color="success" onClick={() => this.hideAddButton()}  tag={Link} to="/schools/new">Add School</Button>{'     '}
+                    <Button id="AddSchool" color="success" onClick={() => this.hideHeader()}  tag={Link} to="/schools/new">Add School</Button>{'     '}
                   </FormGroup>
               </Form>
           </Container>
